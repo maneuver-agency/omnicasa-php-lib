@@ -8,6 +8,7 @@ class Client {
 
   private $_username, $_password;
   private $_language;
+  private $_url;
 
   private $_langs = ['nl' => 1, 'fr' => 2, 'en' => 3];
   public $defaultLanguage = 1;
@@ -18,10 +19,16 @@ class Client {
     $this->_username = $username;
     $this->_password = $password;
 
+    $this->_url = 'http://newapi.omnicasa.com/1.8/OmnicasaService.svc/';
+
     $this->_language = isset($_langs[$language]) ? $_langs[$language] : $this->defaultLanguage;
 
     $this->settings = new Settings($this);
     $this->general = new General($this);
+  }
+
+  public function setUrl($url) {
+    $this->_url = $url;
   }
 
   public function makeRequest($endpoint, $data = []) {
@@ -38,7 +45,7 @@ class Client {
     $endpoint .= 'Json';
 
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, 'http://newapi.omnicasa.com/1.8/OmnicasaService.svc/'. $endpoint .'?json=' . $params);
+    curl_setopt($ch, CURLOPT_URL, $this->_url . $endpoint .'?json=' . $params);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     $output = curl_exec($ch);
     curl_close($ch);
