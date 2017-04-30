@@ -8,6 +8,8 @@ For one of our clients we created a website and build this library to utilize th
 
 Check out the examples folder.
 
+While the API provides both XML and JSON output, the library currently only supports JSON.
+
 **Note:** the api is not publicly available (you need a username and password) and access is restricted to IP.
 
 #### Tiny disclaimer
