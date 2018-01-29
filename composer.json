@@ -9,7 +9,9 @@
             "email": "david@maneuver.be"
         }
     ],
-    "require": {},
+    "require": {
+        "monolog/monolog": "^1.23"
+    },
     "require-dev": {
         "phpunit/phpunit": "5.5.*"
     },

@@ -4,11 +4,16 @@
 
 namespace Maneuver\Omnicasa;
 
+use Monolog\Logger;
+use Monolog\Handler\RotatingFileHandler;
+
 class Client {
 
   private $_username, $_password;
   private $_language;
   private $_url;
+
+  private $logger;
 
   private $_langs = ['nl' => 1, 'fr' => 2, 'en' => 3];
   public $defaultLanguage = 1;
@@ -25,6 +30,9 @@ class Client {
 
     $this->settings = new Settings($this);
     $this->general = new General($this);
+
+    $this->logger = new Logger('omnicasa');
+    $this->logger->pushHandler(new RotatingFileHandler($logfile));
   }
 
   public function setUrl($url) {
@@ -41,14 +49,19 @@ class Client {
 
     // var_dump($params);exit;
 
-    $params = urlencode(json_encode($params));
     $endpoint .= 'Json';
+    $params = json_encode($params);
+    $pretty_url = $this->_url . $endpoint .'?json=' . $params;
+    $params = urlencode($params);
+    $url = $this->_url . $endpoint .'?json=' . $params;
 
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $this->_url . $endpoint .'?json=' . $params);
+    curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     $output = curl_exec($ch);
     curl_close($ch);
+
+    $this->logger->info($pretty_url);
 
     $result = json_decode($output);
     $data = null;
