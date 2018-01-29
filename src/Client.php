@@ -20,7 +20,7 @@ class Client {
 
   public $settings, $general;
 
-  public function __construct($username, $password, $language = 'nl') {
+  public function __construct($username, $password, $language = 'nl', $logfile = 'omnicasa.log') {
     $this->_username = $username;
     $this->_password = $password;
 
