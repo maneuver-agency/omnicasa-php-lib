@@ -13,14 +13,14 @@ class Client {
   private $_language;
   private $_url;
 
-  private $logger;
+  private $_logger = null;
 
   private $_langs = ['nl' => 1, 'fr' => 2, 'en' => 3];
   public $defaultLanguage = 1;
 
   public $settings, $general;
 
-  public function __construct($username, $password, $language = 'nl', $logfile = 'omnicasa.log') {
+  public function __construct($username, $password, $language = 'nl') {
     $this->_username = $username;
     $this->_password = $password;
 
@@ -30,9 +30,11 @@ class Client {
 
     $this->settings = new Settings($this);
     $this->general = new General($this);
+  }
 
-    $this->logger = new Logger('omnicasa');
-    $this->logger->pushHandler(new RotatingFileHandler($logfile));
+  public function enableLogging($logfile = 'omnicasa.log') {
+    $this->_logger = new Logger('omnicasa');
+    $this->_logger->pushHandler(new RotatingFileHandler($logfile));
   }
 
   public function setUrl($url) {
@@ -61,7 +63,9 @@ class Client {
     $output = curl_exec($ch);
     curl_close($ch);
 
-    $this->logger->info($pretty_url);
+    if ($this->_logger) {
+      $this->_logger->info($pretty_url);
+    }
 
     $result = json_decode($output);
     $data = null;
