@@ -55,4 +55,15 @@ class Property extends ClientWrapper {
     return new PropertyCollection([]);
   }
 
+  public function getCountProperties($args = []) {
+    $countConditions = [
+      $args
+    ];
+    $args['CountConditions'] = $countConditions;
+    $result = $this->makeRequest('GetCountProperties', $args, true);
+
+    if ($result) {
+      return $result[0];
+    }
+  }
 }
