@@ -56,6 +56,13 @@ class BaseCollection implements \IteratorAggregate, \JsonSerializable, \Countabl
     return new self($slice);
   }
 
+  public function shuffle() {
+    if (is_array($this->items)) {
+      return shuffle($this->items);
+    }
+    return false;
+  }
+
   public function sortBy($key) {
     if (is_array($this->items)) {
       usort($this->items, function($a, $b) use ($key) {
