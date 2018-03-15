@@ -47,4 +47,16 @@ class Owner extends ClientWrapper {
     $result = $this->makeRequest('GetCalendarHistories', $args);
     return $result;
   }
+
+  public function getStatisticsGraphList($property_id, $from_date = null, $to_date = null, $args = []) {
+    $args['ObjectIDs'] = $property_id;
+    if ($from_date) {
+      $args['StartDate'] = $from_date;
+    }
+    if ($to_date) {
+      $args['EndDate'] = $to_date;
+    }
+    $result = $this->makeRequest('GetMediaObjectStatisticsGraphList', $args);
+    return $result;
+  }
 }
