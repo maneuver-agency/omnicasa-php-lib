@@ -46,4 +46,22 @@ class PropertyCollection extends BaseCollection {
     return $this;
   }
 
+  public function filterBy($field, $value = null) {
+    if (!empty($this->items)) {
+      $list = [];
+
+      foreach($this->items as $index => $prop) {
+        if (isset($prop->$field)) {
+          // if (!$value || $prop->$field == $value) {
+            $list[] = $prop;
+          // }
+        }
+      }
+
+      $this->items = $list;
+    }
+
+    return $this;
+  }
+
 }
