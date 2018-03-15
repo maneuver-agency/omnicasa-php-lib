@@ -54,5 +54,4 @@ class Property extends ClientWrapper {
     }
     return new PropertyCollection([]);
   }
-
 }

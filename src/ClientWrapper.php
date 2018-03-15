@@ -21,8 +21,11 @@ class ClientWrapper {
     $this->fields = $fields;
   }
 
-  protected function makeRequest($method, $args = []) {
+  protected function makeRequest($method, $args = [], $raw = false) {
     $result = $this->client->makeRequest($method, $args);
+
+    if ($raw) return $result;
+    
     return $this->classFactory($result);
   }
 
