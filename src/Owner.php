@@ -35,4 +35,16 @@ class Owner extends ClientWrapper {
     $result = $this->makeRequest('GetVisitStatisticOfProperty', $args);
     return $result;
   }
+
+  public function getCalendar($property_id, $from_date = null, $to_date = null, $args = []) {
+    $args['ObjectID'] = $property_id;
+    if ($from_date) {
+      $args['FromDate'] = $from_date;
+    }
+    if ($to_date) {
+      $args['ToDate'] = $to_date;
+    }
+    $result = $this->makeRequest('GetCalendarHistories', $args);
+    return $result;
+  }
 }
