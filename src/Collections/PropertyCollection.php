@@ -9,9 +9,19 @@ class PropertyCollection extends BaseCollection {
    * Reduces them to a distinct number of projects.
    * Creating a new collection for all others inside the first property object.
    */
-  public function groupByProject() {
+  public function groupByProject($removeSubstatus = []) {
     if (!empty($this->items)) {
       $projects = [];
+
+      if ($removeSubstatus) {
+        $remove = [];
+        foreach ($this->items as $index => $property) {
+          if (in_array($property->SubStatus, $removeSubstatus)) {
+            $remove[] = $property;
+          }
+        }
+        $this->remove($remove);
+      }
 
       foreach ($this->items as $index => $property) {
         $project_id = $property->ProjectID;
