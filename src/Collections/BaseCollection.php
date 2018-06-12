@@ -44,7 +44,12 @@ class BaseCollection implements \IteratorAggregate, \JsonSerializable, \Countabl
 
   public function remove($arr = []) {
     foreach ($arr as $i) {
-      array_splice($this->items, $i, 1);
+      if (is_object($i)) {
+        $i = array_search($i, $this->items);
+      }
+      if ($i) {
+        array_splice($this->items, $i, 1);
+      }
     }
   }
 
