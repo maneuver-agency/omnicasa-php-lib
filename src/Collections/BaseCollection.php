@@ -47,7 +47,7 @@ class BaseCollection implements \IteratorAggregate, \JsonSerializable, \Countabl
       if (is_object($i)) {
         $i = array_search($i, $this->items);
       }
-      if ($i) {
+      if (is_numeric($i)) {
         array_splice($this->items, $i, 1);
       }
     }
