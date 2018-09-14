@@ -28,11 +28,14 @@ class PropertyCollection extends BaseCollection {
 
         if (!empty($project_id)) {
           if (!array_key_exists($project_id, $projects)) {
+            $projects[$project_id] = [];
+          }
+          if (!array_key_exists($property->WebID, $projects[$project_id])) {
             // save the first item for this project.
             $property->propertiesInSameProject = new PropertyCollection();
-            $projects[$project_id] = $property;
+            $projects[$project_id][$property->WebID] = $property;
           } else {
-            $projects[$project_id]->propertiesInSameProject->add($property);
+            $projects[$project_id][$property->WebID]->propertiesInSameProject->add($property);
             unset($this->items[$index]);
           }
         }
