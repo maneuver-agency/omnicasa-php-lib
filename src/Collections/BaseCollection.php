@@ -11,7 +11,7 @@ class BaseCollection implements \IteratorAggregate, \JsonSerializable, \Countabl
 
   public function __construct($list = []) {
     $this->position = 0;
-    $this->items = $list;
+    $this->items = $list ?: [];
   }
 
   public function add(BaseModel $model) {
@@ -32,6 +32,10 @@ class BaseCollection implements \IteratorAggregate, \JsonSerializable, \Countabl
     } else {
       return new \ArrayIterator(array());
     }
+  }
+
+  public function merge(BaseCollection $collection) {
+    $this->items = array_merge($this->items, iterator_to_array($collection, false));
   }
 
   public function jsonSerialize() {
