@@ -20,11 +20,11 @@ class Client {
 
   public $settings, $general;
 
-  public function __construct($username, $password, $language = 'nl') {
+  public function __construct($username, $password, $language = 'nl', $version = 1.12) {
     $this->_username = $username;
     $this->_password = $password;
 
-    $this->_url = 'http://newapi.omnicasa.com/1.8/OmnicasaService.svc/';
+    $this->_url = sprintf('http://newapi.omnicasa.com/%s/OmnicasaService.svc/', (string)$version);
 
     $this->_language = isset($_langs[$language]) ? $_langs[$language] : $this->defaultLanguage;
 
