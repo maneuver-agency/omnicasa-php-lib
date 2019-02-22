@@ -24,6 +24,11 @@ class Owner extends ClientWrapper {
     return $result;
   }
 
+  public function getPersonList($args = []) {
+    $result = $this->makeRequest('GetPersonList', $args);
+    return $result;
+  }
+
   public function getActivity($property_id, $from_date = null, $to_date = null) {
     $args['ObjectID'] = $property_id;
     $result = $this->makeRequest('GetAutomaticHistories', $args);
