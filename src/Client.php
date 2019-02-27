@@ -52,8 +52,26 @@ class Client {
     $this->_url = $url;
   }
 
-  public function makeRequest($endpoint, $data = []) {
+  private function getUncachedEndpoints() {
+    return [
+      'CheckPersonLoginJson', 
+      'GetPersonJson', 
+      'GetPersonListJson', 
+      'GetAutomaticHistoriesJson', 
+      'GetVisitStatisticOfPropertyJson', 
+      'GetCalendarHistoriesJson',
+      'GetMediaObjectStatisticsGraphListJson',
+      'ContactOnMeJson',
+      'ContactOnMeProjectJson',
+      'DemandRegisterJson',
+      'UnsubscribeDemandPersonJson',
+      'GetDemandPersonJson'
+    ];
+  }
 
+
+  public function makeRequest($endpoint, $data = []) {
+    
     $params = array_merge([
       'CustomerName' => $this->_username,
       'CustomerPassword' => $this->_password,
@@ -73,7 +91,7 @@ class Client {
     $cache = new FilesystemCache('', $this->_cachingTimeout, 'omnicasa_cache');
     $cacheKey = md5($url);
 
-    if ($this->_caching) {
+    if ($this->_caching && !in_array($endpoint, $this->getUncachedEndpoints())) {
       if ($cache->has($cacheKey)) {
         return $cache->get($cacheKey);
       }
