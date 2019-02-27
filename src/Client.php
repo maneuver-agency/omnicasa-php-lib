@@ -2,10 +2,11 @@
 
 // http://wiki.omnicasa.com/display/ManuelFR/Omnicasa+APIV2+%3A+Documentation
 
-namespace Maneuver\Omnicasa;
+namespace Maneuver\Omnicasa;  
 
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
+use Symfony\Component\Cache\Simple\FilesystemCache;
 
 class Client {
 
@@ -14,17 +15,19 @@ class Client {
   private $_url;
 
   private $_logger = null;
+  private $_caching = true;
+  private $_cachingTimeout = 3600;
 
   private $_langs = ['nl' => 1, 'fr' => 2, 'en' => 3];
   public $defaultLanguage = 1;
 
   public $settings, $general;
 
-  public function __construct($username, $password, $language = 'nl') {
+  public function __construct($username, $password, $language = 'nl', $version = 1.12) {
     $this->_username = $username;
     $this->_password = $password;
 
-    $this->_url = 'http://newapi.omnicasa.com/1.8/OmnicasaService.svc/';
+    $this->_url = sprintf('http://newapi.omnicasa.com/%s/OmnicasaService.svc/', (string)$version);
 
     $this->_language = isset($_langs[$language]) ? $_langs[$language] : $this->defaultLanguage;
 
@@ -35,6 +38,14 @@ class Client {
   public function enableLogging($logfile = 'omnicasa.log') {
     $this->_logger = new Logger('omnicasa');
     $this->_logger->pushHandler(new RotatingFileHandler($logfile));
+  }
+
+  public function setCachingTimeout($timeout) {
+    $this->_cachingTimeout = $timeout;
+  }
+  
+  public function setCaching($caching) {
+    $this->_caching = $caching;
   }
 
   public function setUrl($url) {
@@ -57,6 +68,17 @@ class Client {
     $params = urlencode($params);
     $url = $this->_url . $endpoint .'?json=' . $params;
 
+
+    $data = null;
+    $cache = new FilesystemCache('', $this->_cachingTimeout, 'omnicasa_cache');
+    $cacheKey = md5($url);
+
+    if ($this->_caching) {
+      if ($cache->has($cacheKey)) {
+        return $cache->get($cacheKey);
+      }
+    }
+    
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -66,10 +88,7 @@ class Client {
     if ($this->_logger) {
       $this->_logger->info($pretty_url);
     }
-
-    $result = json_decode($output);
-    $data = null;
-
+    $result = json_decode($output); 
     $key = $endpoint . 'Result';
     if (!empty($result->$key)) {
       $result = $result->$key;
@@ -85,6 +104,10 @@ class Client {
       }
     } else if (isset($result->Value) && is_object($result->Value)) {
       $data = $result->Value;
+    }
+
+    if ($this->_caching) {
+      $cache->set($cacheKey, $data);
     }
 
     return $data;
