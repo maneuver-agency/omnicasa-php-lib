@@ -41,6 +41,24 @@ class Owner extends ClientWrapper {
     return $result;
   }
 
+  public function getMatchingStats($property_id) {
+    $args['ID'] = $property_id;
+    $result = $this->makeRequest('GetMatchingStatisticOfProperty', $args);
+    return $result;
+  }
+
+  public function getRelations($property_id, $args = []) {
+    $args['ObjectID'] = $property_id;
+    $result = $this->makeRequest('GetRelationList', $args);
+    return $result->Items ?? $result;
+  }
+
+  public function getRelatedProperties($email, $args = []) {
+    $args['Email'] = $email;
+    $result = $this->makeRequest('getRelatedProperties', $args);
+    return $result->Items ?? $result;
+  }
+
   public function getCalendar($property_id, $from_date = null, $to_date = null, $args = []) {
     $args['ObjectID'] = $property_id;
     if ($from_date) {
