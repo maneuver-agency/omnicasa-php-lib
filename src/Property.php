@@ -36,7 +36,7 @@ class Property extends ClientWrapper {
     return new PropertyCollection($result);
   }
 
-  public function getProperty($id, $add_view = FALSE) {
+  public function getProperty($id, $add_view = FALSE, $args = []) {
     $args['ID'] = $id;
     $args['UpdateVisit'] = $add_view;
     $result = $this->makeRequest('GetProperty', $args);
