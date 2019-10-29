@@ -13,6 +13,8 @@ class PropertyCollection extends BaseCollection {
     if (!empty($this->items)) {
       $projects = [];
 
+      // We remove properties here because otherwise an entire project can dissappaer from the site
+      // if the first property in it has already been sold.
       if ($removeSubstatus) {
         $remove = [];
         foreach ($this->items as $index => $property) {
